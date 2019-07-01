@@ -55,30 +55,29 @@ int main(int argc, char **argv)
     // the call to getaddrinfo
     ptr=result;
 
-    // Create a SOCKET for connecting to server
-    ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
-
-    // Check to make sure that a valid socket was created
-    if(ConnectSocket == INVALID_SOCKET)
+    for(ptr = result; ptr != NULL; ptr = ptr->ai_next)
     {
-        printf("Error at socket(): %ld\n", WSAGetLastError());
-        freeaddrinfo(result);
-        WSACleanup();
-        return 1;
-    }
+        // Create a SOCKET for connecting to server
+        ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 
-    // Connect to server.
-    i_result = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-    if(i_result == SOCKET_ERROR)
-    {
-        closesocket(ConnectSocket);
-        ConnectSocket = INVALID_SOCKET;
-    }
+        // Check to make sure that a valid socket was created
+        if(ConnectSocket == INVALID_SOCKET)
+        {
+            printf("Socket failed with error: %ld\n", WSAGetLastError());
+            WSACleanup();
+            return 1;
+        }
 
-    // Should really try the next address returned by getaddrinfo
-    // if the connect call failed
-    // But for this simple example we just free the resources
-    // returned by getaddrinfo and print an error message
+        // Connect to server.
+        i_result = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+        if(i_result == SOCKET_ERROR)
+        {
+            closesocket(ConnectSocket);
+            ConnectSocket = INVALID_SOCKET;
+            continue;
+        }
+        break;
+    }
 
     freeaddrinfo(result);
 
