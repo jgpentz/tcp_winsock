@@ -23,14 +23,16 @@ int main(int argc, char **argv)
     SOCKET ConnectSocket = INVALID_SOCKET;
 
     // Validate the parameters
-    if (argc != 2) {
+    if(argc != 2)
+    {
         printf("usage: %s server-name\n", argv[0]);
         return 1;
     }
 
     // Initialize Winsock
     i_result = WSAStartup(MAKEWORD(2,2), &wsaData);
-    if (i_result != 0) {
+    if(i_result != 0)
+    {
         printf("WSAStartup failed: %d\n", i_result);
         return 1;
     }
@@ -42,7 +44,8 @@ int main(int argc, char **argv)
 
     // Resolve the server address and port
     i_result = getaddrinfo(argv[1], DEFAULT_PORT, &hints, &result);
-    if (i_result != 0) {
+    if(i_result != 0)
+    {
         printf("getaddrinfo failed: %d\n", i_result);
         WSACleanup();
         return 1;
@@ -56,7 +59,8 @@ int main(int argc, char **argv)
     ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 
     // Check to make sure that a valid socket was created
-    if (ConnectSocket == INVALID_SOCKET) {
+    if(ConnectSocket == INVALID_SOCKET)
+    {
         printf("Error at socket(): %ld\n", WSAGetLastError());
         freeaddrinfo(result);
         WSACleanup();
@@ -65,7 +69,8 @@ int main(int argc, char **argv)
 
     // Connect to server.
     i_result = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-    if (i_result == SOCKET_ERROR) {
+    if(i_result == SOCKET_ERROR)
+    {
         closesocket(ConnectSocket);
         ConnectSocket = INVALID_SOCKET;
     }
@@ -77,7 +82,8 @@ int main(int argc, char **argv)
 
     freeaddrinfo(result);
 
-    if (ConnectSocket == INVALID_SOCKET) {
+    if(ConnectSocket == INVALID_SOCKET)
+    {
         printf("Unable to connect to server!\n");
         WSACleanup();
         return 1;
@@ -85,7 +91,8 @@ int main(int argc, char **argv)
 
     // Send an initial buffer
     i_result = send(ConnectSocket, sendbuf, (int)strlen(sendbuf), 0 );
-    if (i_result == SOCKET_ERROR) {
+    if(i_result == SOCKET_ERROR)
+    {
         printf("send failed with error: %d\n", WSAGetLastError());
         closesocket(ConnectSocket);
         WSACleanup();
@@ -96,7 +103,8 @@ int main(int argc, char **argv)
 
     // shutdown the connection since no more data will be sent
     i_result = shutdown(ConnectSocket, SD_SEND);
-    if (i_result == SOCKET_ERROR) {
+    if(i_result == SOCKET_ERROR)
+    {
         printf("shutdown failed with error: %d\n", WSAGetLastError());
         closesocket(ConnectSocket);
         WSACleanup();
@@ -104,7 +112,8 @@ int main(int argc, char **argv)
     }
 
     // Receive until the peer closes the connection
-    do {
+    do
+    {
 
         i_result = recv(ConnectSocket, recvbuf, recvbuflen, 0);
         if ( i_result > 0 )
