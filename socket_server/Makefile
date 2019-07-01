@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-I.
 DEPS = tcp_server.h
 OBJ = tcp_server.o
-LIBS=-lwsock32
+LIBS=-lwsock32 -lWs2_32
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
