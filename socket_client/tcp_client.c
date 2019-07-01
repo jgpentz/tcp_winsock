@@ -53,8 +53,7 @@ int main(int argc, char **argv)
     ptr=result;
 
     // Create a SOCKET for connecting to server
-    ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype,
-        ptr->ai_protocol);
+    ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 
     // Check to make sure that a valid socket was created
     if (ConnectSocket == INVALID_SOCKET) {
